@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sklad Výroba</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: Arial, sans-serif; font-size: 14px; background: #f4f6f8; color: #222; }
+header { background: #1F4E79; color: white; padding: 16px 24px; }
+header h1 { font-size: 20px; font-weight: bold; letter-spacing: 1px; margin-bottom: 10px; }
+#search { padding: 8px 14px; border: none; border-radius: 6px; font-size: 14px; width: 100%; outline: none; }
+.stats { padding: 8px 24px; background: #e8f0f7; font-size: 13px; color: #555; border-bottom: 1px solid #cdd8e3; }
+.table-wrap { padding: 12px; overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
+thead th { background: #1F4E79; color: white; padding: 10px 14px; text-align: left; font-size: 13px; white-space: nowrap; }
+tbody tr { border-bottom: 1px solid #eee; }
+tbody tr:hover { background: #f0f6ff; }
+td { padding: 9px 14px; }
+td:nth-child(1) { color: #888; font-size: 12px; font-family: monospace; width: 80px; }
+tr.hidden { display: none; }
+</style>
+</head>
+<body>
+<header>
+  <h1>SKLAD VÝROBA</h1>
+  <input type="text" id="search" placeholder="Hledat název nebo kartu..." autocomplete="off" />
+</header>
+<div class="stats" id="stats"></div>
+<div class="table-wrap">
+<table>
+  <thead><tr><th>Karta</th><th>Název</th></tr></thead>
+  <tbody id="tbody">
+<tr data-k="v1" data-n="fal - plech hlinik 4"><td>V1</td><td>FAL - plech hliník 4</td></tr>
+<tr data-k="v7" data-n="fj - jekl   15/15/1.5"><td>V7</td><td>FJ - jekl   15/15/1.5</td></tr>
+<tr data-k="v11" data-n="fj - jekl   25/25/2"><td>V11</td><td>FJ - jekl   25/25/2</td></tr>
+<tr data-k="v14" data-n="fj - jekl   30/30/2"><td>V14</td><td>FJ - jekl   30/30/2</td></tr>
+<tr data-k="v15" data-n="fj - jekl   30/30/3"><td>V15</td><td>FJ - jekl   30/30/3</td></tr>
+<tr data-k="v19" data-n="fj - jekl   40/30/2"><td>V19</td><td>FJ - jekl   40/30/2</td></tr>
+<tr data-k="v21" data-n="fj - jekl   40/40/3"><td>V21</td><td>FJ - jekl   40/40/3</td></tr>
+<tr data-k="v22" data-n="fj - jekl   40/40/4"><td>V22</td><td>FJ - jekl   40/40/4</td></tr>
+<tr data-k="v26" data-n="fj - jekl   50/30/3"><td>V26</td><td>FJ - jekl   50/30/3</td></tr>
+<tr data-k="v28" data-n="fj - jekl   50/50/3"><td>V28</td><td>FJ - jekl   50/50/3</td></tr>
+<tr data-k="v29" data-n="fj - jekl   50/50/4"><td>V29</td><td>FJ - jekl   50/50/4</td></tr>
+<tr data-k="v30" data-n="fj - jekl   60/20/2"><td>V30</td><td>FJ - jekl   60/20/2</td></tr>
+<tr data-k="v31" data-n="fj - jekl   60/30/3"><td>V31</td><td>FJ - jekl   60/30/3</td></tr>
+<tr data-k="v33" data-n="fj - jekl   60/40/3"><td>V33</td><td>FJ - jekl   60/40/3</td></tr>
+<tr data-k="v34" data-n="fj - jekl   60/50/3"><td>V34</td><td>FJ - jekl   60/50/3</td></tr>
+<tr data-k="v37" data-n="fj - jekl   70/50/3"><td>V37</td><td>FJ - jekl   70/50/3</td></tr>
+<tr data-k="v35" data-n="fj - jekl   80/80/3"><td>V35</td><td>FJ - jekl   80/80/3</td></tr>
+<tr data-k="v44" data-n="fj - jekl  100/100/3"><td>V44</td><td>FJ - jekl  100/100/3</td></tr>
+<tr data-k="v23" data-n="fj - jekl  160/80/5"><td>V23</td><td>FJ - jekl  160/80/5</td></tr>
+<tr data-k="v46" data-n="fj - jekl c  8/30/30/8/2.5"><td>V46</td><td>FJ - jekl C  8/30/30/8/2.5</td></tr>
+<tr data-k="v47" data-n="fj - jekl c 10/30/30/30/10/2"><td>V47</td><td>FJ - jekl C 10/30/30/30/10/2</td></tr>
+<tr data-k="v48" data-n="fj - jekl c 48.5/44.2/17/2"><td>V48</td><td>FJ - jekl C 48.5/44.2/17/2</td></tr>
+<tr data-k="v49" data-n="fj - jekl l 34/40/25/2"><td>V49</td><td>FJ - jekl L 34/40/25/2</td></tr>
+<tr data-k="v50" data-n="fj - jekl t 55/34/25/2"><td>V50</td><td>FJ - jekl T 55/34/25/2</td></tr>
+<tr data-k="v74" data-n="fj - jekl t85/34/55/2"><td>V74</td><td>FJ - jekl T85/34/55/2</td></tr>
+<tr data-k="v373" data-n="fj-jekl  60/60/3"><td>V373</td><td>FJ-jekl  60/60/3</td></tr>
+<tr data-k="v53" data-n="fk kruhova ocel  10"><td>V53</td><td>FK kruhová ocel  10</td></tr>
+<tr data-k="v54" data-n="fk kruhova ocel  12"><td>V54</td><td>FK kruhová ocel  12</td></tr>
+<tr data-k="v56" data-n="fk kruhova ocel  16"><td>V56</td><td>FK kruhová ocel  16</td></tr>
+<tr data-k="v57" data-n="fk kruhova ocel  20"><td>V57</td><td>FK kruhová ocel  20</td></tr>
+<tr data-k="v58" data-n="fk kruhova ocel  25"><td>V58</td><td>FK kruhová ocel  25</td></tr>
+<tr data-k="v59" data-n="fk kruhova ocel  30"><td>V59</td><td>FK kruhová ocel  30</td></tr>
+<tr data-k="v60" data-n="fk kruhova ocel  35"><td>V60</td><td>FK kruhová ocel  35</td></tr>
+<tr data-k="v61" data-n="fk kruhova ocel  40"><td>V61</td><td>FK kruhová ocel  40</td></tr>
+<tr data-k="v62" data-n="fk kruhova ocel  45"><td>V62</td><td>FK kruhová ocel  45</td></tr>
+<tr data-k="v63" data-n="fk kruhova ocel  50"><td>V63</td><td>FK kruhová ocel  50</td></tr>
+<tr data-k="v64" data-n="fk kruhova ocel  55"><td>V64</td><td>FK kruhová ocel  55</td></tr>
+<tr data-k="v65" data-n="fk kruhova ocel  60"><td>V65</td><td>FK kruhová ocel  60</td></tr>
+<tr data-k="v67" data-n="fkon koleno 40/2"><td>V67</td><td>FKON koleno 40/2</td></tr>
+<tr data-k="v68" data-n="fl - profil l  20/20/3"><td>V68</td><td>FL - profil L  20/20/3</td></tr>
+<tr data-k="v69" data-n="fl - profil l  25/25/3"><td>V69</td><td>FL - profil L  25/25/3</td></tr>
+<tr data-k="v71" data-n="fl - profil l  30/30/4"><td>V71</td><td>FL - profil L  30/30/4</td></tr>
+<tr data-k="v73" data-n="fl - profil l  40/40/4"><td>V73</td><td>FL - profil L  40/40/4</td></tr>
+<tr data-k="v76" data-n="fl - profil l  50/30/4"><td>V76</td><td>FL - profil L  50/30/4</td></tr>
+<tr data-k="v77" data-n="fl - profil l  50/30/5"><td>V77</td><td>FL - profil L  50/30/5</td></tr>
+<tr data-k="v79" data-n="fl - profil l  50/50/5"><td>V79</td><td>FL - profil L  50/50/5</td></tr>
+<tr data-k="v80" data-n="fl - profil l  60/40/5"><td>V80</td><td>FL - profil L  60/40/5</td></tr>
+<tr data-k="v82" data-n="fl - profil l  60/60/6"><td>V82</td><td>FL - profil L  60/60/6</td></tr>
+<tr data-k="v83" data-n="fl - profil l  70/70/6"><td>V83</td><td>FL - profil L  70/70/6</td></tr>
+<tr data-k="v85" data-n="fl - profil l  80/60/6"><td>V85</td><td>FL - profil L  80/60/6</td></tr>
+<tr data-k="v88" data-n="fl - profil l  80/80/8"><td>V88</td><td>FL - profil L  80/80/8</td></tr>
+<tr data-k="v93" data-n="fl - profil l 100/100/10"><td>V93</td><td>FL - profil L 100/100/10</td></tr>
+<tr data-k="v95" data-n="fp - plocha tyc   25/25"><td>V95</td><td>FP - plochá tyč   25/25</td></tr>
+<tr data-k="v96" data-n="fp - plocha tyc  15/15"><td>V96</td><td>FP - plochá tyč  15/15</td></tr>
+<tr data-k="v97" data-n="fp - plocha tyc  20/10"><td>V97</td><td>FP - plochá tyč  20/10</td></tr>
+<tr data-k="v98" data-n="fp - plocha tyc  20/20"><td>V98</td><td>FP - Plochá tyč  20/20</td></tr>
+<tr data-k="v99" data-n="fp - plocha tyc  20/5"><td>V99</td><td>FP - plochá tyč  20/5</td></tr>
+<tr data-k="v100" data-n="fp - plocha tyc  25/5 tr.11"><td>V100</td><td>FP - plochá tyč  25/5 tř.11</td></tr>
+<tr data-k="v102" data-n="fp - plocha tyc  30/10"><td>V102</td><td>FP - plochá tyč  30/10</td></tr>
+<tr data-k="v103" data-n="fp - plocha tyc  30/20 tr.11"><td>V103</td><td>FP - plochá tyč  30/20 tř.11</td></tr>
+<tr data-k="v105" data-n="fp - plocha tyc  30/3"><td>V105</td><td>FP - plochá tyč  30/3</td></tr>
+<tr data-k="v104" data-n="fp - plocha tyc  30/5 tr.11"><td>V104</td><td>FP - plochá tyč  30/5 tř.11</td></tr>
+<tr data-k="v107" data-n="fp - plocha tyc  35/5"><td>V107</td><td>FP - plochá tyč  35/5</td></tr>
+<tr data-k="v112" data-n="fp - plocha tyc  40/30"><td>V112</td><td>FP - plochá tyč  40/30</td></tr>
+<tr data-k="v109" data-n="fp - plocha tyc  40/40"><td>V109</td><td>FP - plochá tyč  40/40</td></tr>
+<tr data-k="v110" data-n="fp - plocha tyc  40/5"><td>V110</td><td>FP - plochá tyč  40/5</td></tr>
+<tr data-k="v111" data-n="fp - plocha tyc  40/8"><td>V111</td><td>FP - plochá tyč  40/8</td></tr>
+<tr data-k="v113" data-n="fp - plocha tyc  50/10"><td>V113</td><td>FP - plochá tyč  50/10</td></tr>
+<tr data-k="v114" data-n="fp - plocha tyc  50/12"><td>V114</td><td>FP - plochá tyč  50/12</td></tr>
+<tr data-k="v115" data-n="fp - plocha tyc  50/5"><td>V115</td><td>FP - plochá tyč  50/5</td></tr>
+<tr data-k="v116" data-n="fp - plocha tyc  50/6"><td>V116</td><td>FP - plochá tyč  50/6</td></tr>
+<tr data-k="v117" data-n="fp - plocha tyc  50/8"><td>V117</td><td>FP - plochá tyč  50/8</td></tr>
+<tr data-k="v118" data-n="fp - plocha tyc  60/10"><td>V118</td><td>FP - plochá tyč  60/10</td></tr>
+<tr data-k="v119" data-n="fp - plocha tyc  60/5"><td>V119</td><td>FP - plochá tyč  60/5</td></tr>
+<tr data-k="v123" data-n="fp - plocha tyc  60/8"><td>V123</td><td>FP - plochá tyč  60/8</td></tr>
+<tr data-k="v125" data-n="fp - plocha tyc  70/5"><td>V125</td><td>FP - plochá tyč  70/5</td></tr>
+<tr data-k="v129" data-n="fp - plocha tyc  80/10"><td>V129</td><td>FP - plochá tyč  80/10</td></tr>
+<tr data-k="v128" data-n="fp - plocha tyc  80/5"><td>V128</td><td>FP - plochá tyč  80/5</td></tr>
+<tr data-k="v130" data-n="fp - plocha tyc 100/10"><td>V130</td><td>FP - plochá tyč 100/10</td></tr>
+<tr data-k="v131" data-n="fp - plocha tyc 100/12"><td>V131</td><td>FP - plochá tyč 100/12</td></tr>
+<tr data-k="v135" data-n="fpl plech 1,5 derov.-ctver.10/10 1x2"><td>V135</td><td>FPL plech 1,5 děrov.-čtver.10/10 1x2</td></tr>
+<tr data-k="v138" data-n="fpl plech ocel  1.3 mm - maly a stredni format"><td>V138</td><td>FPL plech ocel  1.3 mm - malý a střední formát</td></tr>
+<tr data-k="v144" data-n="fpl plech ocel  2 mm - maly a stredni format"><td>V144</td><td>FPL plech ocel  2 mm - malý a střední formát</td></tr>
+<tr data-k="v149" data-n="fpl plech ocel  2,5 mm - maly a stredni format"><td>V149</td><td>FPL plech ocel  2,5 mm - malý a střední formát</td></tr>
+<tr data-k="v137" data-n="fpl plech ocel  3 mm - maly a stredni format"><td>V137</td><td>FPL plech ocel  3 mm - malý a střední formát</td></tr>
+<tr data-k="v150" data-n="fpl plech ocel  4 mm - maly a stredni format"><td>V150</td><td>FPL plech ocel  4 mm - malý a střední formát</td></tr>
+<tr data-k="v152" data-n="fpl plech tahokov mr29x10/2,5/1,5"><td>V152</td><td>FPL plech Tahokov MR29x10/2,5/1,5</td></tr>
+<tr data-k="v155" data-n="fpn plech nerez  0.8 mm lesk 1.25x2.5"><td>V155</td><td>FPN plech NEREZ  0.8 mm LESK 1.25x2.5</td></tr>
+<tr data-k="v156" data-n="fpn plech nerez  0.8 mm lesk 1x2"><td>V156</td><td>FPN plech NEREZ  0.8 mm LESK 1x2</td></tr>
+<tr data-k="v157" data-n="fpn plech nerez  0.8mm kartac 1.25x2.5"><td>V157</td><td>FPN plech NEREZ  0.8mm KARTÁČ 1.25x2.5</td></tr>
+<tr data-k="v158" data-n="fpn plech nerez  0.8mm kartac 1x2"><td>V158</td><td>FPN plech NEREZ  0.8mm KARTÁČ 1x2</td></tr>
+<tr data-k="v166" data-n="fpn plech nerez  1,5 mm lesk 1x2"><td>V166</td><td>FPN plech NEREZ  1,5 mm LESK 1x2</td></tr>
+<tr data-k="v163" data-n="fpn plech nerez  1.5 kartac 1.25x2.5"><td>V163</td><td>FPN plech NEREZ  1.5 KARTÁČ 1.25x2.5</td></tr>
+<tr data-k="v165" data-n="fpn plech nerez  1.5 mm kartac 1x2"><td>V165</td><td>FPN plech NEREZ  1.5 mm KARTÁČ 1x2</td></tr>
+<tr data-k="v164" data-n="fpn plech nerez  1.5 mm lesk 1.25x2.5"><td>V164</td><td>FPN plech NEREZ  1.5 mm LESK 1.25x2.5</td></tr>
+<tr data-k="v168" data-n="ft - profil t  40/40/5"><td>V168</td><td>FT - profil T  40/40/5</td></tr>
+<tr data-k="v169" data-n="ft - profil t  50/50/6"><td>V169</td><td>FT - profil T  50/50/6</td></tr>
+<tr data-k="v170" data-n="ftr trubka   1/2""><td>V170</td><td>FTR trubka   1/2"</td></tr>
+<tr data-k="v171" data-n="ftr trubka   3/4""><td>V171</td><td>FTR trubka   3/4"</td></tr>
+<tr data-k="v172" data-n="ftr trubka   3/8""><td>V172</td><td>FTR trubka   3/8"</td></tr>
+<tr data-k="v173" data-n="ftr trubka   50/2"><td>V173</td><td>FTR trubka   50/2</td></tr>
+<tr data-k="v176" data-n="ftr trubka  70/10"><td>V176</td><td>FTR trubka  70/10</td></tr>
+<tr data-k="v174" data-n="ftr trubka  80/3"><td>V174</td><td>FTR trubka  80/3</td></tr>
+<tr data-k="v177" data-n="ftrn trubka nerez  20x1.5"><td>V177</td><td>FTRN trubka NEREZ  20x1.5</td></tr>
+<tr data-k="v178" data-n="ftrn trubka nerez  40x2"><td>V178</td><td>FTRN trubka NEREZ  40x2</td></tr>
+<tr data-k="v180" data-n="fu - profil u  50"><td>V180</td><td>FU - profil U  50</td></tr>
+<tr data-k="v181" data-n="fu - profil u  65"><td>V181</td><td>FU - profil U  65</td></tr>
+<tr data-k="v182" data-n="fu - profil u  80"><td>V182</td><td>FU - profil U  80</td></tr>
+<tr data-k="v183" data-n="fu - profil u 100"><td>V183</td><td>FU - profil U 100</td></tr>
+<tr data-k="v184" data-n="fu - profil u 120"><td>V184</td><td>FU - profil U 120</td></tr>
+<tr data-k="v185" data-n="fu - profil u 140"><td>V185</td><td>FU - profil U 140</td></tr>
+<tr data-k="v186" data-n="fu - profil u 160"><td>V186</td><td>FU - profil U 160</td></tr>
+<tr data-k="v187" data-n="fu - profil u 180"><td>V187</td><td>FU - profil U 180</td></tr>
+<tr data-k="v188" data-n="fu - profil u 200"><td>V188</td><td>FU - profil U 200</td></tr>
+<tr data-k="v189" data-n="fu - profil u 220"><td>V189</td><td>FU - profil U 220</td></tr>
+<tr data-k="v190" data-n="fu - profil u 240"><td>V190</td><td>FU - profil U 240</td></tr>
+<tr data-k="v191" data-n="guma - pryzove lozisko elv1-150.01"><td>V191</td><td>Guma - pryžové ložisko ELV1-150.01</td></tr>
+<tr data-k="v193" data-n="guma ryhovana - pruzina cm-3618 150x75/1"><td>V193</td><td>Guma rýhovaná - pružina CM-3618 150x75/1</td></tr>
+<tr data-k="v194" data-n="gumovy unasec"><td>V194</td><td>Gumový unašeč</td></tr>
+<tr data-k="v195" data-n="hilti lepidlo hit-hy 50/330/2"><td>V195</td><td>HILTI lepidlo HIT-HY 50/330/2</td></tr>
+<tr data-k="v196" data-n="hilti sitko hit-s 16x85"><td>V196</td><td>HILTI sítko HIT-S 16x85</td></tr>
+<tr data-k="v200" data-n="hmozdina - kotva baz m 8x92"><td>V200</td><td>Hmoždina - kotva BAZ M 8x92</td></tr>
+<tr data-k="v201" data-n="hmozdina - kotva baz m10x105"><td>V201</td><td>Hmoždina - kotva BAZ M10x105</td></tr>
+<tr data-k="v203" data-n="hmozdina - kotva baz m12/100-130"><td>V203</td><td>Hmoždina - kotva BAZ M12/100-130</td></tr>
+<tr data-k="v204" data-n="hmozdina - kotva baz m12x180"><td>V204</td><td>Hmoždina - kotva BAZ M12x180</td></tr>
+<tr data-k="v206" data-n="hmozdina - kotva baz m16/100-120"><td>V206</td><td>Hmoždina - kotva BAZ M16/100-120</td></tr>
+<tr data-k="v207" data-n="hmozdina - kotva baz m16x140"><td>V207</td><td>Hmoždina - kotva BAZ M16x140</td></tr>
+<tr data-k="v208" data-n="hmozdina - kotva baz m16x190"><td>V208</td><td>Hmoždina - kotva BAZ M16x190</td></tr>
+<tr data-k="v209" data-n="hmozdinka naklepavaci"><td>V209</td><td>Hmoždinka naklepávací</td></tr>
+<tr data-k="v210" data-n="hridel s domecky"><td>V210</td><td>hřídel s domečky</td></tr>
+<tr data-k="v212" data-n="infralista celoplosna"><td>V212</td><td>Infrališta celoplošná</td></tr>
+<tr data-k="v214" data-n="jistic 10a"><td>V214</td><td>Jistič 10A</td></tr>
+<tr data-k="v215" data-n="jistic 16a"><td>V215</td><td>Jistič 16A</td></tr>
+<tr data-k="v216" data-n="kabel cyky 3-jx1.5"><td>V216</td><td>Kabel CYKY 3-Jx1.5</td></tr>
+<tr data-k="v217" data-n="kabel cyky 3-jx2.5"><td>V217</td><td>Kabel CYKY 3-Jx2.5</td></tr>
+<tr data-k="v218" data-n="kabel cyky 3-jx4"><td>V218</td><td>Kabel CYKY 3-Jx4</td></tr>
+<tr data-k="v219" data-n="kabel cyky 3o x 1,5"><td>V219</td><td>Kabel CYKY 3O x 1,5</td></tr>
+<tr data-k="v220" data-n="kabel cyky 4 x 1,5"><td>V220</td><td>Kabel CYKY 4 x 1,5</td></tr>
+<tr data-k="v229" data-n="kabel cyky 4jx2,5"><td>V229</td><td>Kabel CYKY 4Jx2,5</td></tr>
+<tr data-k="v222" data-n="kabel cyky 5-jx1.5"><td>V222</td><td>Kabel CYKY 5-Jx1.5</td></tr>
+<tr data-k="v223" data-n="kabel cyky 5-jx2.5"><td>V223</td><td>Kabel CYKY 5-Jx2.5</td></tr>
+<tr data-k="v224" data-n="kabel cyky 5-jx4"><td>V224</td><td>Kabel CYKY 5-Jx4</td></tr>
+<tr data-k="v225" data-n="kabel cysy 2x1"><td>V225</td><td>Kabel CYSY 2x1</td></tr>
+<tr data-k="v226" data-n="kabel cysy 3gx1"><td>V226</td><td>Kabel CYSY 3Gx1</td></tr>
+<tr data-k="v227" data-n="kabel cysy 3gx1,5"><td>V227</td><td>Kabel CYSY 3Gx1,5</td></tr>
+<tr data-k="v230" data-n="kabel cysy 4g 6"><td>V230</td><td>kabel CYSY 4G 6</td></tr>
+<tr data-k="v365" data-n="kabel cysy 4g10"><td>V365</td><td>Kabel CYSY 4G10</td></tr>
+<tr data-k="v232" data-n="kabel cysy 4gx1,5"><td>V232</td><td>Kabel CYSY 4Gx1,5</td></tr>
+<tr data-k="v231" data-n="kabel cysy 4gx2,5"><td>V231</td><td>kabel CYSY 4Gx2,5</td></tr>
+<tr data-k="v221" data-n="kabel cysy 4gx4"><td>V221</td><td>Kabel CYSY 4Gx4</td></tr>
+<tr data-k="v234" data-n="kabel cysy 5g 6"><td>V234</td><td>kabel CYSY 5G 6</td></tr>
+<tr data-k="v366" data-n="kabel cysy 5g10"><td>V366</td><td>Kabel CYSY 5G10</td></tr>
+<tr data-k="v228" data-n="kabel cysy 5gx4"><td>V228</td><td>Kabel CYSY 5Gx4</td></tr>
+<tr data-k="v233" data-n="kabel cysy 5x1,5"><td>V233</td><td>kabel CYSY 5x1,5</td></tr>
+<tr data-k="v368" data-n="kabel olflex 4g10"><td>V368</td><td>Kabel OLFLEX 4G10</td></tr>
+<tr data-k="v367" data-n="kabel olflex 4g6"><td>V367</td><td>Kabel OLFLEX 4G6</td></tr>
+<tr data-k="v311" data-n="kabel plochy 6 x 0,75"><td>V311</td><td>Kabel plochý 6 x 0,75</td></tr>
+<tr data-k="v235" data-n="kabel sdelovaci 12x0,34"><td>V235</td><td>Kabel sdělovací 12x0,34</td></tr>
+<tr data-k="v236" data-n="kabel sykfy 5x2x0,5"><td>V236</td><td>Kabel SYKFY 5x2x0,5</td></tr>
+<tr data-k="v237" data-n="kabel ysly 12g1"><td>V237</td><td>Kabel YSLY 12G1</td></tr>
+<tr data-k="v249" data-n="kladka pa  5x10 cina"><td>V249</td><td>Kladka PA  5x10 Čína</td></tr>
+<tr data-k="v247" data-n="kladka pa 324"><td>V247</td><td>Kladka PA 324</td></tr>
+<tr data-k="v248" data-n="kladka pa 363"><td>V248</td><td>Kladka PA 363</td></tr>
+<tr data-k="v238" data-n="kladka pa 403"><td>V238</td><td>Kladka PA 403</td></tr>
+<tr data-k="v239" data-n="kladka pa 404"><td>V239</td><td>Kladka PA 404</td></tr>
+<tr data-k="v240" data-n="kladka pa 504"><td>V240</td><td>Kladka PA 504</td></tr>
+<tr data-k="v245" data-n="kladky na ram kabiny (val.vedeni) elex   125 mm"><td>V245</td><td>Kladky na rám kabiny (val.vedení) ELEX   125 mm</td></tr>
+<tr data-k="v246" data-n="kladky na ram kabiny (val.vedeni) elex   80 mm"><td>V246</td><td>Kladky na rám kabiny (val.vedení) ELEX   80 mm</td></tr>
+<tr data-k="v241" data-n="kladky na ram kabiny (val.vedeni) elex  150 mm"><td>V241</td><td>Kladky na rám kabiny (val.vedení) ELEX  150 mm</td></tr>
+<tr data-k="v312" data-n="klakson"><td>V312</td><td>Klakson</td></tr>
+<tr data-k="v242" data-n="konektor zs 1/1"><td>V242</td><td>Konektor ZS 1/1</td></tr>
+<tr data-k="v243" data-n="krabice acidur"><td>V243</td><td>Krabice ACIDUR</td></tr>
+<tr data-k="v244" data-n="krabice kt 250"><td>V244</td><td>Krabice KT 250</td></tr>
+<tr data-k="v250" data-n="lapac oleju lo-4 plast"><td>V250</td><td>Lapač olejů LO-4 plast</td></tr>
+<tr data-k="v251" data-n="lisovaci oko"><td>V251</td><td>Lisovací oko</td></tr>
+<tr data-k="v252" data-n="lista vkladaci 130/65"><td>V252</td><td>Lišta vkládací 130/65</td></tr>
+<tr data-k="v253" data-n="lista vkladaci lf  40x40 seda"><td>V253</td><td>Lišta vkládací LF  40x40 šedá</td></tr>
+<tr data-k="v254" data-n="lista vkladaci lh  20x20 ha"><td>V254</td><td>Lišta vkládací LH  20x20 HA</td></tr>
+<tr data-k="v256" data-n="lista vkladaci lh  40/20 ha"><td>V256</td><td>Lišta vkládací LH  40/20 HA</td></tr>
+<tr data-k="v257" data-n="lista vkladaci lh  40x40 ha"><td>V257</td><td>Lišta vkládací LH  40x40 HA</td></tr>
+<tr data-k="v258" data-n="lista vkladaci lh  80x40 ha"><td>V258</td><td>Lišta vkládací LH  80x40 HA</td></tr>
+<tr data-k="v259" data-n="magneticka paska 6x15x150 mm"><td>V259</td><td>Magnetická páska 6x15x150 mm</td></tr>
+<tr data-k="v261" data-n="motor mdf pro rolo"><td>V261</td><td>Motor MDF pro ROLO</td></tr>
+<tr data-k="v262" data-n="napinaci kladka comaq - provedeni leve"><td>V262</td><td>Napínací kladka COMAQ - provedení levé</td></tr>
+<tr data-k="v263" data-n="napinaci kladka comaq - provedeni prave"><td>V263</td><td>Napínací kladka COMAQ - provedení pravé</td></tr>
+<tr data-k="v264" data-n="naraznik d2-d 100x80"><td>V264</td><td>Nárazník D2-D 100x80</td></tr>
+<tr data-k="v260" data-n="naraznik d3-85 125x80"><td>V260</td><td>Nárazník D3-85 125x80</td></tr>
+<tr data-k="v265" data-n="naraznik d5-d 165x80"><td>V265</td><td>Nárazník D5-D 165x80</td></tr>
+<tr data-k="v266" data-n="naraznik d6-d 220x80"><td>V266</td><td>Nárazník D6-D 220x80</td></tr>
+<tr data-k="v267" data-n="naraznik p1 80/80"><td>V267</td><td>Nárazník P1 80/80</td></tr>
+<tr data-k="v277" data-n="nouzove otevirani vdj"><td>V277</td><td>Nouzové otevírání VDJ</td></tr>
+<tr data-k="v268" data-n="objimka gz10"><td>V268</td><td>objímka GZ10</td></tr>
+<tr data-k="v269" data-n="odklaneci krivka ok1"><td>V269</td><td>Odkláněcí křivka OK1</td></tr>
+<tr data-k="v270" data-n="odklaneci magnet vom1/48"><td>V270</td><td>Odkláněcí magnet VOM1/48</td></tr>
+<tr data-k="v271" data-n="oznacovac kabelu kapro"><td>V271</td><td>Označovač kabelů KAPRO</td></tr>
+<tr data-k="v275" data-n="plastova lista pro drzak snimace"><td>V275</td><td>Plastová lišta pro držák snímače</td></tr>
+<tr data-k="v276" data-n="plastovy drzak trub.snimace"><td>V276</td><td>Plastový držák trub.snímače</td></tr>
+<tr data-k="v278" data-n="prevodovka mrt 70"><td>V278</td><td>Převodovka MRT 70</td></tr>
+<tr data-k="v285" data-n="samomazice ital"><td>V285</td><td>Samomazice ITAL</td></tr>
+<tr data-k="v288" data-n="samomaznice + prichytny plech  technico  9mm"><td>V288</td><td>Samomaznice + příchytný plech  TECHNICO  9mm</td></tr>
+<tr data-k="v371" data-n="samomaznice + prichytny plech techniko   5 mm"><td>V371</td><td>Samomaznice + příchytný plech TECHNIKO   5 mm</td></tr>
+<tr data-k="v369" data-n="samomaznice + prichytny plech techniko 12 mm"><td>V369</td><td>Samomaznice + příchytný plech TECHNIKO 12 mm</td></tr>
+<tr data-k="v372" data-n="samomaznice + prichytny plech techniko 15 mm"><td>V372</td><td>Samomaznice + příchytný plech TECHNIKO 15 mm</td></tr>
+<tr data-k="v370" data-n="samomaznice + prichytny plech techniko 16 mm"><td>V370</td><td>Samomaznice + příchytný plech TECHNIKO 16 mm</td></tr>
+<tr data-k="v286" data-n="samomaznice ak1 uzky"><td>V286</td><td>Samomaznice AK1 úzký</td></tr>
+<tr data-k="v289" data-n="samomaznice nizka"><td>V289</td><td>Samomaznice nízká</td></tr>
+<tr data-k="v287" data-n="samomaznice simalube strojni olej 5-16"><td>V287</td><td>Samomaznice SimaLube strojní olej 5-16</td></tr>
+<tr data-k="v290" data-n="silentblok  75/40"><td>V290</td><td>Silentblok  75/40</td></tr>
+<tr data-k="v308" data-n="silentblok 30/30"><td>V308</td><td>Silentblok 30/30</td></tr>
+<tr data-k="v291" data-n="silonova podlozka zelena 21,5x60x160"><td>V291</td><td>Silonová podložka zelená 21,5x60x160</td></tr>
+<tr data-k="v279" data-n="silonove vylozeni  lc"><td>V279</td><td>Silonové vyložení  LC</td></tr>
+<tr data-k="v294" data-n="silonove vylozeni - zelene s. 5 mm"><td>V294</td><td>Silonové vyložení - zelené š. 5 mm</td></tr>
+<tr data-k="v295" data-n="silonove vylozeni - zelene s. 9 mm"><td>V295</td><td>Silonové vyložení - zelené š. 9 mm</td></tr>
+<tr data-k="v297" data-n="silonove vylozeni - zelene s.10 mm"><td>V297</td><td>Silonové vyložení - zelené š.10 mm</td></tr>
+<tr data-k="v313" data-n="silonove vylozeni - zelene s.11 mm"><td>V313</td><td>Silonové vyložení - zelené š.11 mm</td></tr>
+<tr data-k="v292" data-n="silonove vylozeni - zelene s.12 mm"><td>V292</td><td>Silonové vyložení - zelené š.12 mm</td></tr>
+<tr data-k="v298" data-n="silonove vylozeni - zelene s.15 mm"><td>V298</td><td>Silonové vyložení - zelené š.15 mm</td></tr>
+<tr data-k="v296" data-n="silonove vylozeni - zelene s.16 mm"><td>V296</td><td>Silonové vyložení - zelené š.16 mm</td></tr>
+<tr data-k="v293" data-n="silonove vylozeni - zelene s.18 mm"><td>V293</td><td>Silonové vyložení - zelené š.18 mm</td></tr>
+<tr data-k="v272" data-n="simalube kartac 5-16mm"><td>V272</td><td>Simalube kartáč 5-16mm</td></tr>
+<tr data-k="v299" data-n="spinac ap4t41"><td>V299</td><td>Spínač AP4T41</td></tr>
+<tr data-k="v300" data-n="spinac bezpecnostni fa131z11"><td>V300</td><td>Spínač bezpečnostní FA131Z11</td></tr>
+<tr data-k="v301" data-n="spinac koncovy fr-615"><td>V301</td><td>Spínač koncový FR-615</td></tr>
+<tr data-k="v302" data-n="spinac koncovy xckn2118p20"><td>V302</td><td>Spínač koncový XCKN2118P20</td></tr>
+<tr data-k="v303" data-n="spinac koncovy xckp2521p16"><td>V303</td><td>Spínač koncový XCKP2521P16</td></tr>
+<tr data-k="v304" data-n="spinac sv 1"><td>V304</td><td>Spínač SV 1</td></tr>
+<tr data-k="v305" data-n="spinac sv 2"><td>V305</td><td>Spínač SV 2</td></tr>
+<tr data-k="v306" data-n="spinac sv 3"><td>V306</td><td>Spínač SV 3</td></tr>
+<tr data-k="v307" data-n="spinac sv 4"><td>V307</td><td>Spínač SV 4</td></tr>
+<tr data-k="v309" data-n="spinac xckd2139p16/50"><td>V309</td><td>Spínač XCKD2139P16/50</td></tr>
+<tr data-k="v310" data-n="spinac zachycovacu r1 - al, pr1 - al"><td>V310</td><td>Spínač zachycovačů R1 - AL, PR1 - AL</td></tr>
+<tr data-k="v314" data-n="svitidlo ct 2114-c chrom"><td>V314</td><td>Svítidlo CT 2114-C CHROM</td></tr>
+<tr data-k="v319" data-n="svitidlo do sachty octe"><td>V319</td><td>Svítidlo do šachty OCTE</td></tr>
+<tr data-k="v315" data-n="svitidlo katro led"><td>V315</td><td>Svítidlo KATRO LED</td></tr>
+<tr data-k="v317" data-n="svitidlo led - s cidlem - male"><td>V317</td><td>Svítidlo LED - s čidlem - malé</td></tr>
+<tr data-k="v316" data-n="svitidlo led - s cidlem - velke"><td>V316</td><td>Svítidlo LED - s čidlem - velké</td></tr>
+<tr data-k="v320" data-n="svitidlo led 1w s cidlem"><td>V320</td><td>Svítidlo LED 1W s čidlem</td></tr>
+<tr data-k="v145" data-n="svitidlo s cidlem ip 54 12-18w"><td>V145</td><td>Svítidlo s čidlem IP 54 12-18W</td></tr>
+<tr data-k="v321" data-n="svitidlo wt060c led36s"><td>V321</td><td>Svítidlo WT060C LED36S</td></tr>
+<tr data-k="v323" data-n="svitidlo-led ps 24w panel"><td>V323</td><td>Svítidlo-LED PS 24W panel</td></tr>
+<tr data-k="v322" data-n="svorka plocheho kabelu"><td>V322</td><td>Svorka plochého kabelu</td></tr>
+<tr data-k="v325" data-n="tlacitko pozar"><td>V325</td><td>Tlačítko Požár</td></tr>
+<tr data-k="v326" data-n="tlacitko stop-skrin xal-k174e"><td>V326</td><td>Tlačítko STOP-skříň XAL-K174E</td></tr>
+<tr data-k="v327" data-n="tlacitko zvonek"><td>V327</td><td>Tlačítko ZVONEK</td></tr>
+<tr data-k="v328" data-n="transformator lt150"><td>V328</td><td>Transformátor LT150</td></tr>
+<tr data-k="v273" data-n="trubka 42.4x2"><td>V273</td><td>Trubka 42.4x2</td></tr>
+<tr data-k="v329" data-n="trubka ohebna monoflex 1416et"><td>V329</td><td>Trubka ohebná monoflex 1416ET</td></tr>
+<tr data-k="v330" data-n="trubka ohebna monoflex 1420et"><td>V330</td><td>Trubka ohebná monoflex 1420ET</td></tr>
+<tr data-k="v331" data-n="trubka ohebna monoflex 1425et"><td>V331</td><td>Trubka ohebná monoflex 1425ET</td></tr>
+<tr data-k="v332" data-n="trubka ohebna monoflex 1432et"><td>V332</td><td>Trubka ohebná monoflex 1432ET</td></tr>
+<tr data-k="v334" data-n="uzavera dveri nu-sl"><td>V334</td><td>Uzávěra dveří NU-SL</td></tr>
+<tr data-k="v335" data-n="vodici celist rovna al 140"><td>V335</td><td>Vodící čelist rovná AL 140</td></tr>
+<tr data-k="v336" data-n="vodici celist rovna l100/5"><td>V336</td><td>Vodící čelist rovná L100/5</td></tr>
+<tr data-k="v337" data-n="vodic  0.5 cya ruzne barvy (h05v-u)"><td>V337</td><td>Vodič  0.5 CYA různé barvy (H05V-U)</td></tr>
+<tr data-k="v338" data-n="vodic  1 cya ruzne barvy (h05 v-k)"><td>V338</td><td>Vodič  1 CYA různé barvy (H05 V-K)</td></tr>
+<tr data-k="v339" data-n="vodic  4 cya cerny (h07v-k)"><td>V339</td><td>Vodič  4 CYA černý (H07V-K)</td></tr>
+<tr data-k="v340" data-n="vodic  4 cya zz (h07v-k)"><td>V340</td><td>Vodič  4 CYA zž (H07V-K)</td></tr>
+<tr data-k="v341" data-n="vodic  6 cya cerny (h07v-k)"><td>V341</td><td>Vodič  6 CYA černý (H07V-K)</td></tr>
+<tr data-k="v342" data-n="vodic  6 cya zz (h07v-k)"><td>V342</td><td>Vodič  6 CYA zž (H07V-K)</td></tr>
+<tr data-k="v343" data-n="vodic 10 cya cerny (h07v-k)"><td>V343</td><td>Vodič 10 CYA černý (H07V-K)</td></tr>
+<tr data-k="v344" data-n="vodic 10 cya zz (h07v-k)"><td>V344</td><td>Vodič 10 CYA zž (H07V-K)</td></tr>
+<tr data-k="v346" data-n="vypalky-konzole"><td>V346</td><td>Výpalky-konzole</td></tr>
+<tr data-k="v347" data-n="vypinac"><td>V347</td><td>Vypínač</td></tr>
+<tr data-k="v349" data-n="vypinac  pruzny"><td>V349</td><td>Vypínač  pružný</td></tr>
+<tr data-k="v348" data-n="vypinac vs 32"><td>V348</td><td>Vypínač VS 32</td></tr>
+<tr data-k="v350" data-n="vyvodka pg 13,5"><td>V350</td><td>Vývodka Pg 13,5</td></tr>
+<tr data-k="v351" data-n="vyvodka pg 16"><td>V351</td><td>Vývodka Pg 16</td></tr>
+<tr data-k="v352" data-n="vyvodka pg 21"><td>V352</td><td>Vývodka Pg 21</td></tr>
+<tr data-k="v353" data-n="vyvodka pg 29"><td>V353</td><td>Vývodka Pg 29</td></tr>
+<tr data-k="v318" data-n="zarivkova trubice 600-900"><td>V318</td><td>Zářivková trubice 600-900</td></tr>
+<tr data-k="v355" data-n="zasuvka 5518a b1"><td>V355</td><td>Zásuvka 5518A B1</td></tr>
+<tr data-k="v356" data-n="zaves pevny m16 200"><td>V356</td><td>Závěs pevný M16 200</td></tr>
+<tr data-k="v359" data-n="zaves pruzny m12 340mm"><td>V359</td><td>Závěs pružný M12 340mm</td></tr>
+<tr data-k="v357" data-n="zaves pruzny m16 - spec.300"><td>V357</td><td>Závěs pružný M16 - spec.300</td></tr>
+<tr data-k="v358" data-n="zaves pruzny m16 340"><td>V358</td><td>Závěs pružný M16 340</td></tr>
+<tr data-k="v361" data-n="zarovka  60 w  e27"><td>V361</td><td>Žárovka  60 W  E27</td></tr>
+<tr data-k="v362" data-n="zarovka 100 w / 220 v  e27 mat,lesk"><td>V362</td><td>Žárovka 100 W / 220 V  E27 mat,lesk</td></tr>
+<tr data-k="v363" data-n="zarovka led60"><td>V363</td><td>Žárovka LED60</td></tr>
+  </tbody>
+</table>
+</div>
+<script>
+var allRows = document.querySelectorAll('#tbody tr');
+var statsEl = document.getElementById('stats');
+statsEl.textContent = allRows.length + ' položek';
+function norm(s){ return (s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,''); }
+document.getElementById('search').addEventListener('input', function(){
+  var q = norm(this.value.trim());
+  var count = 0;
+  for(var i=0; i<allRows.length; i++){
+    var r = allRows[i];
+    if(!q || r.getAttribute('data-k').indexOf(q)>=0 || r.getAttribute('data-n').indexOf(q)>=0){
+      r.classList.remove('hidden');
+      count++;
+    } else {
+      r.classList.add('hidden');
+    }
+  }
+  statsEl.textContent = count + ' / ' + allRows.length + ' položek';
+});
+</script>
+</body>
+</html>
